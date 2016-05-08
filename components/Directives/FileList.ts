@@ -8,12 +8,10 @@ import {iFile} from "../Services/FileWrapper.service";
     selector: 'fileList, [fileList]',
     directives: [File],
     styles: [`
-        .file-list {
-            width: 400px;
+          .file-list {
             margin-bottom: 25px;
-            display: flex;
-            flex-flow: wrap;
-            justify-content: flex-start;
+            display: block;
+            width: 400px;
          }
     `],
     template: `
@@ -28,6 +26,7 @@ import {iFile} from "../Services/FileWrapper.service";
             (removeFile)="removeFile(file, i)">
         </fileItem>
     </div>
+    
     `
 })
 

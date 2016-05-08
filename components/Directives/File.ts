@@ -6,22 +6,15 @@ import {GetSizePipe} from '../Pipes/GetSize.pipe';
     selector: 'fileItem',
     pipes: [GetSizePipe],
     styles: [`
-        .file-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 75px;
+          .file-container {
+            display: block;
             margin: 20px 5px 0 0;
             transition: opacity 0.5s, margin 0.5s linear;
-            flex-direction: column;
-
+            border: 1px solid #ccc;
         }
 
-
         .flex-block {
-            width: 90%;
-            text-align: center;
-            font-size: 0.8em;
+            font-size: 1em;
             margin: 2px 0;
         }
         
@@ -30,8 +23,13 @@ import {GetSizePipe} from '../Pipes/GetSize.pipe';
         }
         
         .file-name {
-            text-overflow: ellipsis;
+            display: inline-block;
             overflow: hidden;
+            text-overflow: ellipsis;
+            vertical-align: bottom;
+            white-space: nowrap;
+            max-width: 70%;
+            margin: 5px 0 0 5px;
         }
         
         .file-preview {
@@ -51,26 +49,70 @@ import {GetSizePipe} from '../Pipes/GetSize.pipe';
         }
 
         .file-progress {
-            width: 80%;
-            display: block;
+            width: 70%;
+            margin-left: 5%;
+            display: inline;
+            margin-top: 10px;
+            margin-bottom: 10px;
         }
-
 
         button {
             margin: 0;
         }   
+        
+        .file-size{
+            max-width: 20%;
+            display: inline;
+            color: #777;
+            padding: 3px 0;
+        }
+        
+        .remove-file, .retry, .file-remove-local {
+            border: none;
+            background: #f1f1f1;
+            border-radius: 2px;
+            color: rgba(0, 0, 0, 0.6);
+            margin: 8px;
+            padding: 9px;
+            font-size: 12px;
+            line-height: 4px;
+            float: right;           
+        }
+        
+        .remove-file:hover {
+            background: #e4322b;
+            color: #fff;
+        } 
+        
+        .file-remove-local:hover{
+            background: #ff6666;
+            color: #fff; 
+        }
+        
+         .retry:hover {
+            background: #3399ff;
+            color: #fff; 
+        }    
     `],
     template: `
-        <div *ngIf="file" class="file-container" [ngClass]="uploadingClass()">
-            <div class="flex-block file-preview" [ngStyle]="{'background-image': 'url(' + previewSrc + ')', 'height': previewHeight + 'px'}">
-                <div *ngIf="ext" class="flex-block file-preview-ext ">{{ext}}</div>
-                <div *ngIf="!previewSrc" class="flex-block file-name">{{fileName}}</div>
+      <div *ngIf="file" class="file-container" [ngClass]="uploadingClass()">
+            <div>
+                <div class="file-name">{{fileName}}</div>
+                <div class="file-size">{{file.size | getSize }} ({{ext}})</div>
                 <progress [value]="percentage" max="100" class="file-progress"></progress>
-                <div *ngIf="uploadingClass()==='uploaded'" [ngStyle]="{cursor:'pointer'}" (click)="removeFileFromServer()">Remove</div>
-                <div (click)="removeFileFromServer()" *ngIf="uploadingClass()==='failed'" [ngStyle]="{cursor:'pointer'}">Retry</div>
+              
+                 <div *ngIf="uploadingClass()==='uploaded'" [ngStyle]="{display:'inline'}">
+                    <button class="fa fa-times remove-file" title="Remove from Server" (click)="removeFileFromServer();" [ngStyle]="{cursor:'pointer'}"></button>
+                 </div>
+                 
+                 <div *ngIf="uploadingClass() !='uploaded'" [ngStyle]="{display:'inline'}">
+                    <button class="fa fa-times file-remove-local" title="Remove" (click)="removeFileListener();" [ngStyle]="{cursor:'pointer'}"></button>
+                 </div>
+                 
+                <div *ngIf="uploadingClass()==='failed'" [ngStyle]="{display:'inline'}">
+                    <button class="fa fa-refresh retry" title="Retry" (click)="removeFileFromServer();" [ngStyle]="{cursor:'pointer'}"></button>
+                </div>
             </div>
-            <div class="file-remove" (click)="removeFileListener()"><button>Remove</button></div>
-            <div class="flex-block">{{file.size | getSize }}</div>
         </div>
     `
 })
